@@ -45,7 +45,8 @@ AbpHelper is a tool that help you with developing Abp vNext applications.
     * `-d` specified the **root** directory of the ABP project, which is created by the ABP CLI
 
     AbpHelper will generate all the CRUD stuffs , even include adding migration and database updating!
-
+    > If you generate `CreateGetListInput` , you need to manual add [AutoFilterer](https://enisn-projects.io/docs/en/autofilterer/latest/Getting-Started) package to your `Application.Contracts` project 
+	
 1. Run the `DbMigrator` to seed the database
 1. Startup your application
 1. Login with the default admin account, and see the magic happens!

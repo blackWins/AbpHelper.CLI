@@ -25,15 +25,27 @@ using System.Threading.Tasks;
 using {{ ProjectInfo.FullName }}.Permissions;
 {{~ end ~}}
 using {{ EntityInfo.Namespace }}.Dtos;
-using Volo.Abp.Application.Dtos;
 using Volo.Abp.Application.Services;
 {{~ if Option.SkipCustomRepository ~}}
 using Volo.Abp.Domain.Repositories;
 {{~ end ~}}
+{{~ if Option.CreateGetListInput ~}}
+using System.Linq;
+using System.Threading.Tasks;
+using AutoFilterer.Extensions;
+{{~ else ~}}
+using Volo.Abp.Application.Dtos;
+{{~ end ~}}
+{{~ if Option.CreateGetListInput
+    getListInput = EntityInfo.Name + "GetListInput"
+else
+    getListInput = "PagedAndSortedResultRequestDto"
+~}}
+{{~ end ~}}
 
 namespace {{ EntityInfo.Namespace }};
 
-public class {{ EntityInfo.Name }}AppService : {{ crudClassName }}<{{ EntityInfo.Name }}, {{ DtoInfo.ReadTypeName }}, {{ EntityInfo.PrimaryKey ?? EntityInfo.CompositeKeyName }}, PagedAndSortedResultRequestDto, {{ DtoInfo.CreateTypeName }}, {{ DtoInfo.UpdateTypeName }}>,
+public class {{ EntityInfo.Name }}AppService : {{ crudClassName }}<{{ EntityInfo.Name }}, {{ DtoInfo.ReadTypeName }}, {{ EntityInfo.PrimaryKey ?? EntityInfo.CompositeKeyName }}, {{ getListInput }} , {{ DtoInfo.CreateTypeName }}, {{ DtoInfo.UpdateTypeName }}>,
     I{{ EntityInfo.Name }}AppService
 {
     {{~ if !Option.SkipPermissions ~}}
@@ -83,6 +95,14 @@ public class {{ EntityInfo.Name }}AppService : {{ crudClassName }}<{{ EntityInfo
     {
         // TODO: AbpHelper generated
         return query.OrderBy(e => e.{{ EntityInfo.CompositeKeys[0].Name }});
+    }
+    {{~ end ~}}
+    {{~ if Option.CreateGetListInput ~}}
+
+    protected override async Task<IQueryable<{{ EntityInfo.Name }}>> CreateFilteredQueryAsync({{ getListInput }} input)
+    {
+        // TODO: AbpHelper generated
+        return (await base.CreateFilteredQueryAsync(input)).ApplyFilter(input);
     }
     {{~ end ~}}
 }

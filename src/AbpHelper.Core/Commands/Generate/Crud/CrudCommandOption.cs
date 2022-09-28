@@ -35,6 +35,9 @@ This argument takes effect only if '--skip-db-migrations' is NOT specified.";
         [Option("skip-db-migrations", Description = "Skip performing db migration and update")]
         public bool SkipDbMigrations { get; set; }
 
+        [Option("create-getlist-input", Description = "Generating 'GetListInput' and use autofilter package do filter query")]
+        public bool CreateGetListInput { get; set; }
+
         [Option("skip-ui", Description = "Skip generating UI")]
         public bool SkipUi { get; set; }
 

@@ -1,5 +1,24 @@
 {{~ if Bag.PagesFolder; pagesFolder = Bag.PagesFolder + "/"; end ~}}
 $(function () {
+{{~ if Option.CreateGetListInput ~}}
+    $("#GoodsTypeFilter :input").on('input', function () {
+        dataTable.ajax.reload();
+    });
+
+    $('#GoodsTypeFilter div input').addClass('form-control-sm').parent().addClass('col-sm-3').parent().addClass('container row');
+
+    var getFilter = function () {
+        var input = {};
+        $("#GoodsTypeFilter")
+            .serializeArray()
+            .forEach(function (data) {
+                if (data.value != '') {
+                    input[abp.utils.toCamelCase(data.name.replace(/GoodsTypeFilter./g, ''))] = data.value;
+                }
+            })
+        return input;
+    };
+{{~ end ~}}
 
     var l = abp.localization.getResource('{{ ProjectInfo.Name }}');
 
@@ -11,11 +30,13 @@ $(function () {
         processing: true,
         serverSide: true,
         paging: true,
+        {{~ if !Option.CreateGetListInput ~}}
         searching: false,
+        {{~ end ~}}
         autoWidth: false,
         scrollCollapse: true,
         order: [[0, "asc"]],
-        ajax: abp.libs.datatables.createAjax(service.getList),
+        ajax: abp.libs.datatables.createAjax(service.getList{{~ if Option.CreateGetListInput~}},getFilter{{~ end ~}}),
         columnDefs: [
             {
                 rowAction: {
